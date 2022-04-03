@@ -3,12 +3,18 @@ package hello.core;
 import hello.core.member.Grade;
 import hello.core.member.Member;
 import hello.core.member.MemberService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class MemberApp {
     public static void main(String[] args) {
-        AppConfig appConfig = new AppConfig();
-        MemberService memberService = appConfig.memberService();
-//        MemberService memberService = new MemberServiceImpl();
+//        AppConfig appConfig = new AppConfig();
+//        MemberService memberService = appConfig.memberService();
+
+        // 스프링 컨테이너를 통해서 필요한 객체(빈)를 찾는다
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        // 이름은 메소드 이름으로 빈에 등록. 두번째 파라미터는 타입
+        MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
 
         Member member = new Member(1L, "memberA", Grade.VIP);
         memberService.join(member);
