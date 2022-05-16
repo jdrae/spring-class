@@ -1,0 +1,41 @@
+package hello.servlet.domain.member;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MemberRepository {
+    // MemberRepository 가 static 이기 때문에 필드에 static 이 없어도 됨
+    // 동시성 문제 때문에 실무에서는 ConcurrentHashMap, AtomicLong
+    private static Map<Long, Member> store = new HashMap<>();
+    private static long sequence = 0L;
+
+    private static final MemberRepository instance = new MemberRepository();
+
+    public static MemberRepository getInstance(){
+        return instance;
+    }
+    private MemberRepository(){
+    }
+
+    public Member save(Member member){
+        member.setId(++sequence);
+        store.put(member.getId(), member);
+        return member;
+    }
+
+    public Member findById(Long id){
+        return store.get(id);
+    }
+
+    public List<Member> findAll(){
+        // store 는 수정이 불가능하게끔
+        // store 가 아니라 새로 list 로 감싸서 반환.
+        return new ArrayList<>(store.values());
+    }
+
+    public void clearStore(){
+        store.clear();
+    }
+}
