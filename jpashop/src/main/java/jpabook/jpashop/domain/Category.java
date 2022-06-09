@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter @Setter
 public class Category {
@@ -29,10 +31,17 @@ public class Category {
     parent 컬럼에 스스로를 fk 로 연결하고,
     child 로 리스트를 조회가능.
      */
-    @ManyToOne
+    @ManyToOne(fetch=LAZY)
     @JoinColumn(name="parent_id")
     private Category parent;
 
     @OneToMany(mappedBy="parent")
     private List<Category> child = new ArrayList<>();
+
+    //==연관관계 메소드==//
+    public void addChildCategory(Category child){
+        this.child.add(child);
+        child.setParent(this);
+    }
+
 }
